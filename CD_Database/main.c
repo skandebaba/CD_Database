@@ -4,20 +4,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 int main()
 {
     char    artist[100][61];         // Store the artist of the CD
     char    title[100][61];          // Store the title of the CD
     int     tracks[100];             // Store number of tracks on CD
-    char    type;                    // Used to read in album/single info
+    char    type;                    // Used as a boolean
     int     album[100];              // boolean - album or single?
     float   price[100];              // Store the price of the CD
     int     count = 0;               // How many CDs are being tracked
     int     i;                       // Loop counter
 
-    printf("Welcome to the CD database\n");
-    printf("You can store a maximum of 100 CDs\n");
+    puts("Welcome to the CD database");
+    puts("You can store a maximum of 100 CDs");
 
     // Loop until user no longer wish to enter any more CDs
 
@@ -25,45 +26,48 @@ int main()
     {
         // Ask the user if they want to enter another CD
         // Any answer other than y or Y will be treated as a NO
-        printf("\nDo you have any more CDs to enter (y/n)? ");
+        fputs("\nDo you have any more CDs to enter (y/n)? ", stdout);
         fflush(stdin);
         scanf("%c", &type);
-        if (type != 'y' && type != 'Y')
+
+        if (toupper(type) != 'Y')
             break;
 
-        printf("\n");       // Neat output
-
+        puts("");       // newline - for neat output
 
         // Prompt user to enter ARTIST of the CD
-        printf("Please enter the details of CD %d...\n\n", count+1);
-        printf("Artist? ");
+        printf("Please enter the details of CD %d...\n", count+1);
+        fputs("Artist? ", stdout);
         fflush(stdin);
-        scanf("%[^\n]", artist[count]);
+        fgets(artist[count], sizeof artist[count], stdin);
+        artist[count][strlen(artist[count])-1] = '\0';  // Remove newline
 
         // Prompt user to enter TITLE of the CD
-        printf("Title? ");
+        fputs("Title? ", stdout);
         fflush(stdin);
-        scanf("%[^\n]", title[count]);
+        fgets(title[count], sizeof title[count], stdin);
+        title[count][strlen(title[count])-1] = '\0';    // Remove newline
 
         // Number of tracks on the CD
-        printf("Tracks? ");
+        fputs("Tracks? ", stdout);
         fflush(stdin);
         scanf("%d", &tracks[count]);
 
         // Album or a single?
         for (;;)
         {
-            printf("Album or single (a for album, s for single)? ");
+            fputs("Album or single (a for album, s for single)? ", stdout);
             fflush(stdin);
             scanf("%c", &type);
-            if (type == 'a' || type == 's')
+            type = toupper(type);
+            if (type == 'A' || type == 'S')
                 break;
-            printf("Error - only 'a' or 's' are allowed\n");
+            puts("Error - only 'a' or 's' are allowed");
         }
-        album[count] = type == 'a';    // If we get here it must be 'a' or 's'
+        album[count] = type == 'A';    // If we get here it must be 'a' or 's'
 
         // Price of the CD
-        printf("Price? ");
+        fputs("Price? ", stdout);
         fflush(stdin);
         scanf("%f", &price[count]);
 
@@ -72,7 +76,7 @@ int main()
         // Check if array has been filled up
         if (count == 100)
         {
-            printf("You have reached the limits of this program\n\n");
+            puts("You have reached the limits of this program\n");
             break;
         }
     }
@@ -81,28 +85,29 @@ int main()
     {
         // Output the details of the CD
         printf("\nThe details you have entered for CD %d are:\n", i+1);
-        printf("=========================================\n");
+        puts("=========================================");
         printf("Artist: %s\n", artist[i]);
         printf("Title: %s\n", title[i]);
         printf("Number of tracks: %d\n", tracks[i]);
         if (album[i])
-            printf("Album\n");
+            puts("Album");
         else
-            printf("Single\n");
+            puts("Single");
         printf("Price: %.2f\n", price[i]);
-        printf("=========================================\n");
+        puts("=========================================");
 
         if (i < count - 1)  // Only do this if there are more CDs to see
         {
             // User-friendly way to progress to the next CD
-            printf("\nPress ENTER to see the next set of details: ");
+            puts("");
+            fputs("\nPress ENTER to see the next set of details: ", stdout);
             fflush(stdin);
             getchar();
         }
     }
 
     // User-friendly way to exit the program
-    printf("\nPress ENTER to exit the program ");
+    fputs("\nPress ENTER to exit the program ", stdout);
     fflush(stdin);
     getchar();
 }
