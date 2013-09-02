@@ -32,10 +32,16 @@ int main()
     scanf("%d", &tracks);
 
     // Album or a single?
-    printf("Album or single (a for album, s for single)? ");
-    fflush(stdin);
-    scanf("%c", &type);
-    album = type == 'a';    // If user didn't type 'a' or 's' it assumes 's'
+    for (;;)
+    {
+        printf("Album or single (a for album, s for single)? ");
+        fflush(stdin);
+        scanf("%c", &type);
+        if (type == 'a' || type == 's')
+            break;
+        printf("Error - only 'a' or 's' are allowed\n");
+    }
+    album = type == 'a';    // If we get here it must be 'a' or 's'
 
     // Price of the CD
     printf("Price? ");
