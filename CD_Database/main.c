@@ -18,7 +18,7 @@ int main()
     int     i;                       // Loop counter
 
     puts("Welcome to the CD database");
-    puts("You can store a maximum of 100 CDs");
+    printf("You can store a maximum of %d CDs", sizeof album/sizeof album[0]);
 
     // Loop until user no longer wish to enter any more CDs
 
@@ -60,6 +60,7 @@ int main()
             fflush(stdin);
             scanf("%c", &type);
             type = toupper(type);
+
             if (type == 'A' || type == 'S')
                 break;
             puts("Error - only 'a' or 's' are allowed");
@@ -71,17 +72,15 @@ int main()
         fflush(stdin);
         scanf("%f", &price[count]);
 
-        count = count + 1;
-
         // Check if array has been filled up
-        if (count == 100)
+        if (++count == 100)
         {
             puts("You have reached the limits of this program\n");
             break;
         }
     }
 
-    for (i = 0; i < count; i = i + 1)
+    for (i = 0; i < count; i++)
     {
         // Output the details of the CD
         printf("\nThe details you have entered for CD %d are:\n", i+1);
@@ -89,10 +88,7 @@ int main()
         printf("Artist: %s\n", artist[i]);
         printf("Title: %s\n", title[i]);
         printf("Number of tracks: %d\n", tracks[i]);
-        if (album[i])
-            puts("Album");
-        else
-            puts("Single");
+        puts(album[i] == 1 ? ("Album") : ("Single"));       // album[i] == 1 ? puts("Album") : puts("Single");
         printf("Price: %.2f\n", price[i]);
         puts("=========================================");
 
