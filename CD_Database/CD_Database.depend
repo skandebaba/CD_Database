@@ -1,6 +1,9 @@
 # depslib dependency file v1.0
-1378099671 source:d:\users\johann\documents\github\cd_database\cd_database\main.c
+1378349384 source:d:\users\johann\documents\github\cd_database\cd_database\main.c
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>
+	"database.h"
+
+1378349407 d:\users\johann\documents\github\cd_database\cd_database\database.h
 
