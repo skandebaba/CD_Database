@@ -7,111 +7,191 @@
 #include <ctype.h>
 #include "database.h"
 
+/*
+ *  trim_newline()
+ *
+ *  Remove the newline character from a string (if there is one)
+ *  It is assumed that if there is a new line character on the string,
+ *  it will be the last character in the string (except for the null)
+ */
+trim_newline(char string[])
+ {
+     if(string[strlen(string)-1] = '\n')
+        string[strlen(string)-1] = '\0';
+ }
+
+/*
+ *  enter()
+ *
+ *  Give the user a piece of information and ask them to press ENTER
+ */
+enter(char prompt[])
+{
+    fputs(prompt, stdout);
+    fflush(stdin);
+    getchar();
+}
+
+/*
+ *  yesno()
+ *
+ *  Ask the user a question and prompt for a Y or N (or y or n) answer
+ *  No other answer will be acceptable
+ *  If y/Y is given the function returns 1. n/N gives 0
+ */
+int yesno(char prompt[])    // Prompt should not include a question mark
+{
+    char    answer;
+
+    // Loop until correct answer is given
+    for(;;)
+    {
+        fputs(prompt, stdout);          // Display the question
+        fputs(" (Y/N)? ", stdout);      // Add a helpful prompt
+        fflush(stdin);
+        scanf("%c", &answer);
+
+        // Process the answer
+        answer = toupper(answer);       // Convert to uppercase
+        if (answer == 'Y')
+            return 1;
+        if (answer == 'N')
+            return 0;
+
+        printf("Error - Only 'y/Y' or 'n/N' are allowed\n");
+    }
+}
+
+/*
+ *  read_int()
+ *
+ *  Ask the user a question and prompt for an integer answer
+ */
+int read_int(char prompt[])
+{
+    int     answer;
+
+    fputs(prompt, stdout);
+    fflush(stdin);
+    scanf("%d", &answer);
+
+    return answer;
+}
+
+/*
+ *  read_float()
+ *
+ *  Ask the user a question and prompt for a float answer
+ */
+float read_float(char prompt[])
+{
+    float     answer;
+
+    fputs(prompt, stdout);
+    fflush(stdin);
+    scanf("%f", &answer);
+
+    return answer;
+}
+
+/*
+ *  read_string()
+ *
+ *  Ask the user a question and prompt for a string answer
+ *  MAX = size of "answer" including NULL terminating character
+ *  Note: The answer parameter is MODIFIED by the function
+ */
+read_string(char prompt[], char answer[], int MAX)
+{
+    fputs(prompt, stdout);
+    fflush(stdin);
+    fgets(answer, MAX, stdin);
+
+    trim_newline(answer);
+}
+
+/*
+ *  print_cd()
+ *
+ *  Display (using printf) the details of one CD
+ */
+print_cd(cd_t cd)
+{
+    puts("=========================================");
+#ifndef NOARTIST
+    printf("Artist: %s\n", cd.artist);
+#endif
+    printf("Title: %s\n", cd.title);
+    printf("Number of tracks: %d\n", cd.tracks);
+    puts(cd.album == 1 ? ("Album") : ("Single"));       // album[i] == 1 ? puts("Album") : puts("Single");
+    printf("Price: %.2f\n", cd.price);
+    puts("=========================================");
+}
+
+/*
+ *  read_cd()
+ *
+ *  Read the details of one CD
+ */
+ cd_t read_cd()
+ {
+     cd_t   cd;
+
+#ifndef NOARTIST
+    read_string("Artist? ", cd.artist, sizeof cd.artist);
+#endif
+    read_string("Title? ", cd.title, sizeof cd.title);
+    cd.tracks = read_int("Number of tracks? ");
+    cd.album = yesno("Is the CD an Album");
+    cd.price = read_float("Retail price (e.g. 4.65)? ");
+
+    return cd;
+ }
+
 int main()
 {
-#ifndef NOARTIST
-    char    artist[MAX_CDS][ARTIST_SIZE+1];         // Store the artist of the CD
-#endif
-    char    title[MAX_CDS][TITLE_SIZE+1];       // Store the title of the CD
-    int     tracks[MAX_CDS];                        // Store number of tracks on CD
-    char    type;                                   // Used as a boolean
-    int     album[MAX_CDS];                         // boolean - album or single?
-    float   price[MAX_CDS];                         // Store the price of the CD
-    int     count = 0;                              // How many CDs are being tracked
-    int     i;                                      // Loop counter
+    cd_t    cds[MAX_CDS];        // Create an array of CD stuctures
+    int     count = 0;          // How many CDs are being tracked
+    int     i;                  // Loop counter
 
     puts("Welcome to the CD database");
-    printf("You can store a maximum of %d CDs", sizeof album/sizeof album[0]);
+    printf("You can store a maximum of %d CDs\n\n", sizeof cds / sizeof cds[0]);
 
     // Loop until user no longer wish to enter any more CDs
-
     for (;;)
     {
         // Ask the user if they want to enter another CD
-        // Any answer other than y or Y will be treated as a NO
-        fputs("\nDo you have any more CDs to enter (y/n)? ", stdout);
-        fflush(stdin);
-        scanf("%c", &type);
-
-        if (toupper(type) != 'Y')
+        if (!yesno("\nDo you have any more CDs to enter"))
             break;
 
-        puts("");       // newline - for neat output
-
-
         printf("Please enter the details of CD %d...\n", count+1);
-#ifndef NOARTIST
-        // Prompt user to enter ARTIST of the CD
-        fputs("Artist? ", stdout);
-        fflush(stdin);
-        fgets(artist[count], sizeof artist[count], stdin);
-        artist[count][strlen(artist[count])-1] = '\0';  // Remove newline
-#endif
 
-        // Prompt user to enter TITLE of the CD
-        fputs("Title? ", stdout);
-        fflush(stdin);
-        fgets(title[count], sizeof title[count], stdin);
-        title[count][strlen(title[count])-1] = '\0';    // Remove newline
-
-        // Number of tracks on the CD
-        fputs("Tracks? ", stdout);
-        fflush(stdin);
-        scanf("%d", &tracks[count]);
-
-        // Album or a single?
-        for (;;)
-        {
-            fputs("Album or single (a for album, s for single)? ", stdout);
-            fflush(stdin);
-            scanf("%c", &type);
-            type = toupper(type);
-
-            if (type == 'A' || type == 'S')
-                break;
-            puts("Error - only 'a' or 's' are allowed");
-        }
-        album[count] = type == 'A';    // If we get here it must be 'a' or 's'
-
-        // Price of the CD
-        fputs("Price? ", stdout);
-        fflush(stdin);
-        scanf("%f", &price[count]);
+        // Read all the CD details
+        cds[count] = read_cd();
 
         // Check if array has been filled up
-        if (++count == MAX_CDS)
+        if (++count == MAX_CDS) // Note increment happens before the test
         {
-            puts("You have reached the limits of this program\n");
+            enter("You have reached the limits of this program\n"
+                  "Press ENTER to exit the program");
             break;
         }
     }
 
+    // Output the details of the CD
     for (i = 0; i < count; i++)
     {
-        // Output the details of the CD
-        printf("\nThe details you have entered for CD %d are:\n", i+1);
-        puts("=========================================");
-#ifndef NOARTIST
-        printf("Artist: %s\n", artist[i]);
-#endif
-        printf("Title: %s\n", title[i]);
-        printf("Number of tracks: %d\n", tracks[i]);
-        puts(album[i] == 1 ? ("Album") : ("Single"));       // album[i] == 1 ? puts("Album") : puts("Single");
-        printf("Price: %.2f\n", price[i]);
-        puts("=========================================");
+        printf("\nThe details of CD %d are:\n", i+1);
+        print_cd(cds[i]);
 
-        if (i < count - 1)  // Only do this if there are more CDs to see
+        // Only do this if there are more CDs to see
+        if (i < count - 1)
         {
             // User-friendly way to progress to the next CD
-            puts("");
-            fputs("\nPress ENTER to see the next set of details: ", stdout);
-            fflush(stdin);
-            getchar();
+            enter("\nPress ENTER to see the next set of details: ");
         }
     }
 
     // User-friendly way to exit the program
-    fputs("\nPress ENTER to exit the program ", stdout);
-    fflush(stdin);
-    getchar();
+    enter("\nPress ENTER to exit the program ");
 }
