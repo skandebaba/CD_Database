@@ -32,7 +32,16 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="database.h" />
+		<Unit filename="input.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="output.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="utils.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
