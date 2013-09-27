@@ -54,19 +54,15 @@ read_string(char prompt[], char answer[], int MAX)
  *
  *  Read the details of one CD
  */
- cd_t read_cd()
+read_cd(cd_t *cd)
  {
-     cd_t   cd;
-
 #ifndef NOARTIST
-    read_string("Artist? ", cd.artist, sizeof cd.artist);
+    read_string("Artist? ", cd->artist, sizeof cd->artist);
 #endif
-    read_string("Title? ", cd.title, sizeof cd.title);
-    cd.tracks = read_int("Number of tracks? ");
-    cd.album = yesno("Is the CD an Album");
-    cd.price = read_float("Retail price (e.g. 4.65)? ");
-
-    return cd;
+    read_string("Title? ", cd->title, sizeof cd->title);
+    cd->tracks = read_int("Number of tracks? ");
+    cd->album = yesno("Is the CD an Album");
+    cd->price = read_float("Retail price (e.g. 4.65)? ");
 }
 
 /*

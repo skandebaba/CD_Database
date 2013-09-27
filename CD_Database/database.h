@@ -38,5 +38,5 @@ int yesno(char prompt[]);    // Prompt should not include a question mark
 int read_int(char prompt[]);
 float read_float(char prompt[]);
 int read_string(char prompt[], char answer[], int MAX);
-int print_cd(cd_t cd);
- cd_t read_cd();
+int print_cd(cd_t *cd);
+int read_cd(cd_t *cd);

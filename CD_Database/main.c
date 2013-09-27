@@ -9,7 +9,7 @@
 
 int main()
 {
-    cd_t    cds[MAX_CDS];        // Create an array of CD stuctures
+    cd_t    cds[MAX_CDS];       // Create an array of CD stuctures
     int     count = 0;          // How many CDs are being tracked
     int     i;                  // Loop counter
 
@@ -26,7 +26,7 @@ int main()
         printf("Please enter the details of CD %d...\n", count+1);
 
         // Read all the CD details
-        cds[count] = read_cd();
+        read_cd(&cds[count]);
 
         // Check if array has been filled up
         if (++count == MAX_CDS) // Note increment happens before the test
@@ -41,7 +41,7 @@ int main()
     for (i = 0; i < count; i++)
     {
         printf("\nThe details of CD %d are:\n", i+1);
-        print_cd(cds[i]);
+        print_cd(&cds[i]);
 
         // Only do this if there are more CDs to see
         if (i < count - 1)
