@@ -7,9 +7,10 @@
 #include <ctype.h>
 #include "database.h"
 
+static  cd_t    cds[MAX_CDS];   // Create an array of CD stuctures
+
 int main()
 {
-    cd_t    cds[MAX_CDS];       // Create an array of CD stuctures
     int     count = 0;          // How many CDs are being tracked
     int     i;                  // Loop counter
 
